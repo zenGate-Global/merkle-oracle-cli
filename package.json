@@ -1,0 +1,82 @@
+{
+  "name": "merkle-oracle-cli",
+  "version": "0.0.1",
+  "description": "merkle oracle cli",
+  "license": "MIT",
+  "packageManager": "pnpm@10.11.0",
+  "engines": {
+    "node": "^22"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "prebuild:clean": "rimraf dist",
+    "prebuild": "pnpm npm-run-all prebuild:clean",
+    "build:typescript": "pnpm tsc",
+    "build": "pnpm npm-run-all build:typescript",
+    "postbuild:clean": "rimraf dist/tests && rimraf --glob \"dist/vitest*\"",
+    "postbuild:plutus": "pnpm copy-files-from-to",
+    "postbuild": "pnpm npm-run-all postbuild:clean postbuild:plutus",
+    "lint:eslint": "pnpm eslint .",
+    "lint:prettier": "pnpm prettier -c .",
+    "lint": "pnpm npm-run-all lint:eslint lint:prettier",
+    "prettier": "pnpm exec prettier -w .",
+    "test": "pnpm vitest --run"
+  },
+  "bin": {
+    "merkle-oracle-cli": "dist/entrypoint.js"
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "copyFiles": [
+    {
+      "from": "src/contracts/multisig/plutus.json",
+      "to": "dist/contracts/multisig/plutus.json"
+    },
+    {
+      "from": "src/contracts/oracle/plutus.json",
+      "to": "dist/contracts/oracle/plutus.json"
+    }
+  ],
+  "resolutions": {
+    "@harmoniclabs/crypto": "^0.3.0-dev0"
+  },
+  "dependencies": {
+    "@blockfrost/blockfrost-js": "^6.0.0",
+    "@lucid-evolution/lucid": "^0.4.27",
+    "@noble/hashes": "^1.8.0",
+    "arktype": "^2.1.20",
+    "bip39": "^3.1.0",
+    "commander": "^14.0.0",
+    "decimal.js": "^10.5.0",
+    "effect": "^3.15.3",
+    "p-limit": "^6.2.0",
+    "p-retry": "^6.2.1",
+    "ts-handling": "^0.2.5"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.27.0",
+    "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+    "@types/blake2": "^4.0.4",
+    "@types/node": "^22.15.21",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "copy-files-from-to": "^3.12.1",
+    "del-cli": "^6.0.0",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-import-resolver-typescript": "^4.3.5",
+    "eslint-plugin-import": "^2.31.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  }
+}

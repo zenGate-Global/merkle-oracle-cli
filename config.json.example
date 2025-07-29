@@ -1,0 +1,4 @@
+{
+  "blockfrostApiKey": "previewYourBlockfrostApiKeyHere32chars",
+  "walletMnemonic": "your twelve word mnemonic phrase goes here to recover your wallet",
+} 

@@ -1,0 +1,3 @@
+const TOLERANCE_MS = 300000;
+
+export { TOLERANCE_MS };

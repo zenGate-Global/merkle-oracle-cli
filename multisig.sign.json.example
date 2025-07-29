@@ -1,0 +1,10 @@
+{
+  "txHex": "",
+  "requiredSigners": [""],
+  "signers": [
+    {
+      "signer": "",
+      "witness": ""
+    }
+  ]
+}
