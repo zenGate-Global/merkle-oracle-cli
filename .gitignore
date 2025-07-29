@@ -3,7 +3,6 @@ build
 dist
 docs
 node_modules
-plutus.json
 .ready
 config.json
 multisig.sign.json
