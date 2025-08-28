@@ -67,6 +67,37 @@ const parseMultisigDatum = (datum: string) =>
 const parseMultisigDatumSafe = (datum: string) =>
   $MultisigDatum(Data.from(datum));
 
+const $ConsumerDeployDatum = type({
+  fields: [PolicyId, AssetName, "bigint"],
+}).pipe((data) => {
+  return {
+    oraclePolicyId: data.fields[0],
+    oracleAssetName: data.fields[1],
+    threshold: data.fields[2],
+  };
+});
+
+const ConsumerDeployDatum = (
+  $oraclePolicyId: PolicyId,
+  $oracleAssetName: AssetName,
+  $threshold: bigint,
+): OutputDatum => {
+  const value = Data.to(
+    new Constr(0, [
+      PolicyId.assert($oraclePolicyId),
+      AssetName.assert($oracleAssetName),
+      $threshold,
+    ]),
+  );
+  return { kind: "inline", value };
+};
+
+const parseConsumerDeployDatum = (datum: string) =>
+  $ConsumerDeployDatum.assert(Data.from(datum));
+
+const parseConsumerDeployDatumSafe = (datum: string) =>
+  $ConsumerDeployDatum(Data.from(datum));
+
 export {
   parseMerkleOracleDatum,
   parseMerkleOracleDatumSafe,
@@ -74,4 +105,7 @@ export {
   parseMultisigDatum,
   parseMultisigDatumSafe,
   MultisigDatum,
+  parseConsumerDeployDatum,
+  parseConsumerDeployDatumSafe,
+  ConsumerDeployDatum,
 };

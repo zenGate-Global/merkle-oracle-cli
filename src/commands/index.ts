@@ -6,3 +6,6 @@ export * from "./change-signatures.js";
 export * from "./change-threshold.js";
 export * from "./add-signature.js";
 export * from "./singleton-withdraw.js";
+export * from "./deploy-consumer.js";
+export * from "./spend.js";
+export * from "./spend-auto.js";

@@ -5,9 +5,12 @@ import {
   changeSignaturesCommand,
   changeThresholdCommand,
   deploy,
+  deployConsumer,
   genesis,
   recreate,
   singletonWithdrawCommand,
+  spend,
+  spendAuto,
 } from "./commands/index.js";
 import { NULL_TRIE_HASH } from "./contracts/oracle/constants.js";
 
@@ -69,6 +72,21 @@ program
   .action(deploy);
 
 program
+  .command("deploy-consumer")
+  .description("Deploys consumer contract")
+  .option("--oracle-policy-id <id>", "The policy ID of the oracle token")
+  .option("--oracle-asset-name <name>", "The asset name of the oracle token")
+  .option("--lovelace-to-lock <amount>", "Amount of lovelace to lock")
+  .option("--threshold <number>", "The threshold number required")
+  .option(
+    "--should-deploy-script",
+    "Set flag to deploy the consumer script on-chain",
+    false,
+  )
+  .option("--submit", "Set flag to submit the tx on-chain", false)
+  .action(deployConsumer);
+
+program
   .command("change-signatures")
   .description("Changes the signatures for multisig contract")
   .option("--genesis-tx-hash <hash>", "The genesis TX hash")
@@ -118,5 +136,29 @@ program
   )
   .option("--submit", "Set flag to submit the tx on-chain", false)
   .action(singletonWithdrawCommand);
+
+program
+  .command("spend")
+  .description("Spends from consumer contract with merkle proof")
+  .option("--genesis-tx-hash <hash>", "The genesis TX hash")
+  .option("--withdraw-address <address>", "The address to withdraw funds to")
+  .option("--item-key-hash <hash>", "The item key hash")
+  .option("--item-value <value>", "The item value in format 'value1,value2'")
+  .option("--membership-proof <proof>", "The merkle membership proof")
+  .option("--submit", "Set flag to submit the tx on-chain", false)
+  .action(spend);
+
+program
+  .command("spend-auto")
+  .description(
+    "Automatically spends from consumer contract by fetching data from API",
+  )
+  .option("--genesis-tx-hash <hash>", "The genesis TX hash")
+  .option("--withdraw-address <address>", "The address to withdraw funds to")
+  .option("--item-id <id>", "The item ID to fetch from the API")
+  .option("--item-key <key>", "The item key to fetch from the API")
+  .option("--api-base-url <url>", "The base URL of the API")
+  .option("--submit", "Set flag to submit the tx on-chain", false)
+  .action(spendAuto);
 
 export default program;

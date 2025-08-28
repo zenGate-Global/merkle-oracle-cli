@@ -68,7 +68,7 @@ const resolvePlutusPath = async () => {
  * development (src/) and production (dist/) environments.
  */
 const resolveContractPath = async (
-  contractName: "oracle" | "multisig",
+  contractName: "oracle" | "multisig" | "consumer",
 ): Promise<string> => {
   // try the dist path
   const distPath = path.join(

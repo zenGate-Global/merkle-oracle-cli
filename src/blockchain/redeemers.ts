@@ -1,5 +1,5 @@
 import { Constr, Data } from "@lucid-evolution/lucid";
-import { Uint, VerificationKey } from "../inputs.js";
+import { ByteArray, Uint, VerificationKey } from "../inputs.js";
 
 const genesisAction = new Constr(0, []);
 const recreateAction = new Constr(1, []);
@@ -35,10 +35,25 @@ const MultisigChangeThresholdRedeemer = Data.to(
   new Constr(0, [changeAdminAction]),
 );
 
+const ConsumerSpendRedeemer = (
+  $itemKeyHash: ByteArray,
+  $itemValue: [bigint, bigint],
+  $membershipProof: string,
+) => {
+  return Data.to(
+    new Constr(0, [
+      ByteArray.assert($itemKeyHash),
+      $itemValue,
+      Data.from($membershipProof),
+    ]),
+  );
+};
+
 export {
   GenesisRedeemer,
   RecreateRedeemer,
   ChangeAdminRedeemer,
+  ConsumerSpendRedeemer,
   SingletonWithdrawRedeemer,
   MultisigGenesisRedeemer,
   MultisigChangeSignaturesRedeemer,

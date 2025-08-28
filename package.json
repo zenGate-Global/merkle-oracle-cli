@@ -40,6 +40,10 @@
     {
       "from": "src/contracts/oracle/plutus.json",
       "to": "dist/contracts/oracle/plutus.json"
+    },
+    {
+      "from": "src/contracts/consumer/plutus.json",
+      "to": "dist/contracts/consumer/plutus.json"
     }
   ],
   "resolutions": {
