@@ -3,7 +3,7 @@ import { type } from "arktype";
 import { AssetName, ByteArray, PolicyId, Uint } from "../inputs.js";
 
 const $MerkleOracleDatum = type({
-  fields: [PolicyId, AssetName, ByteArray, ByteArray, Uint],
+  fields: [PolicyId, AssetName, ByteArray, 'string', Uint],
 }).pipe((data) => {
   return {
     adminSingletonPolicyId: data.fields[0],
@@ -18,7 +18,7 @@ const MerkleOracleDatum = (
   $adminSingletonPolicyId: PolicyId,
   $adminSingletonAssetName: AssetName,
   $merkleRoot: ByteArray,
-  $ipfsCid: ByteArray,
+  $ipfsCid: string,
   $createdAt: Uint,
 ): OutputDatum => {
   const value = Data.to(
@@ -26,7 +26,7 @@ const MerkleOracleDatum = (
       PolicyId.assert($adminSingletonPolicyId),
       AssetName.assert($adminSingletonAssetName),
       ByteArray.assert($merkleRoot),
-      ByteArray.assert($ipfsCid),
+      $ipfsCid,
       Uint.assert($createdAt),
     ]),
   );
