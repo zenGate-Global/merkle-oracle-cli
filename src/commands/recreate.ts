@@ -12,7 +12,7 @@ import { recreateContract } from "../merkle-oracle/index.js";
 const RecreateOptions = type({
   requiredSigners: VerificationKey.array(),
   newMerkleRootHash: ByteArray,
-  newIpfsCid: 'string',
+  newIpfsCid: "string",
   genesisTxHash: TxHash,
   submit: "boolean",
 });

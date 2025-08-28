@@ -3,7 +3,7 @@ import { type } from "arktype";
 import { AssetName, ByteArray, PolicyId, Uint } from "../inputs.js";
 
 const $MerkleOracleDatum = type({
-  fields: [PolicyId, AssetName, ByteArray, 'string', Uint],
+  fields: [PolicyId, AssetName, ByteArray, "string", Uint],
 }).pipe((data) => {
   return {
     adminSingletonPolicyId: data.fields[0],
