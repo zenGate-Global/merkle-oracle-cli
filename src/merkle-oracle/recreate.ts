@@ -21,7 +21,7 @@ const recreateContract = async (
   genesisTxHash: TxHash,
   requiredSigners: Array<string>,
   newMerkleRootHash: ByteArray,
-  newIpfsCid: ByteArray,
+  newIpfsCid: string,
   lucid: LucidEvolution,
   config: Config,
   network: Network,
