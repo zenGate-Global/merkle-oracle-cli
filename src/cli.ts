@@ -9,6 +9,7 @@ import {
   recreate,
   singletonWithdrawCommand,
 } from "./commands/index.js";
+import { NULL_TRIE_HASH } from "./contracts/oracle/constants.js";
 
 const program = new Command();
 program.description("CLI for merkle oracle");
@@ -23,8 +24,8 @@ program
   )
   .option("--admin-policy-id <id>", "The policy ID of the admin token")
   .option("--admin-asset-name <name>", "The asset name of the admin token")
-  .option("--ipfs-cid <cid>", "The IPFS CID")
-  .option("--tree-root <root>", "The merkle tree root hash")
+  .option("--ipfs-cid <cid>", "The IPFS CID", NULL_TRIE_HASH)
+  .option("--tree-root <root>", "The merkle tree root hash", NULL_TRIE_HASH)
   .option("--submit", "Set flag to submit the tx on-chain", false)
   .action(genesis);
 
