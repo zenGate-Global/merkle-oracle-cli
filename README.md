@@ -267,7 +267,7 @@ merkle-oracle-cli spend [options]
 - `--withdraw-address <address>` - Address to withdraw funds to
 - `--item-key-hash <hash>` - Item key hash
 - `--item-value <value>` - Item value in format 'value1,value2'
-- `--membership-proof <proof>` - Merkle membership proof
+- `--membership-proof <proof>` - Merkle membership proof hex string
 - `--submit` - Submit the transaction on-chain (default: false)
 
 **Example:**
@@ -277,7 +277,7 @@ merkle-oracle-cli spend \
   --withdraw-address "addr_withdraw..." \
   --item-key-hash "0x789ghi..." \
   --item-value "100,200" \
-  --membership-proof '["0xproof1...", "0xproof2..."]' \
+  --membership-proof "deadbeef" \
   --submit
 ```
 
