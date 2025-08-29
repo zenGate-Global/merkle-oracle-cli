@@ -2,9 +2,9 @@
 
 Command-line interface for deploying and managing merkle oracle contract, multisig contract, and the oracle consumer contract. 
 
-Merkle Oracle Contracts: https://github.com/zenGate-Global/merkle-oracle-contracts
-MultiSig Contract: https://github.com/zenGate-Global/palm-multisig-aiken
-Oracle Consumer Contract: https://github.com/zenGate-Global/oracle-consumer
+- Merkle Oracle Contracts: https://github.com/zenGate-Global/merkle-oracle-contracts
+- MultiSig Contract: https://github.com/zenGate-Global/palm-multisig-aiken
+- Oracle Consumer Contract: https://github.com/zenGate-Global/oracle-consumer
 
 ## Overview
 
