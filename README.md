@@ -107,7 +107,7 @@ merkle-oracle-cli change-admin [options]
 - `--genesis-tx-hash <hash>` - Genesis transaction hash
 - `--new-admin-policy-id <id>` - New admin policy ID
 - `--new-admin-asset-name <name>` - New admin asset name
-- `--required-signers <signers...>` - Array of required signer addresses for partial signing
+- `--required-signers <signers...>` - Array of required signer vfks for partial signing
 - `--submit` - Submit the transaction on-chain (default: false)
 
 **Example:**
@@ -116,7 +116,7 @@ merkle-oracle-cli change-admin \
   --genesis-tx-hash "abc123..." \
   --new-admin-policy-id "def456..." \
   --new-admin-asset-name "new_admin_token" \
-  --required-signers "addr1..." \
+  --required-signers "vfk1..." \
   --submit
 ```
 
@@ -130,7 +130,7 @@ merkle-oracle-cli singleton-withdraw [options]
 **Options:**
 - `--genesis-tx-hash <hash>` - Genesis transaction hash
 - `--withdraw-address <address>` - Address to withdraw the singleton to
-- `--required-signers <signers...>` - Array of required signer addresses for partial signing
+- `--required-signers <signers...>` - Array of required signer vfks for partial signing
 - `--submit` - Submit the transaction on-chain (default: false)
 
 **Example:**
@@ -138,7 +138,7 @@ merkle-oracle-cli singleton-withdraw [options]
 merkle-oracle-cli singleton-withdraw \
   --genesis-tx-hash "abc123..." \
   --withdraw-address "addr_withdraw..." \
-  --required-signers "addr1..." "addr2..." \
+  --required-signers "vfk1..." "vfk2..." \
   --submit
 ```
 
@@ -161,7 +161,7 @@ merkle-oracle-cli deploy [options]
 ```bash
 merkle-oracle-cli deploy \
   --threshold 2 \
-  --signatures "addr1..." "addr2..." "addr3..." \
+  --signatures "vfk1..." "vfk2..." "vfk3..." \
   --submit
 ```
 
@@ -174,7 +174,7 @@ merkle-oracle-cli change-signatures [options]
 
 **Options:**
 - `--genesis-tx-hash <hash>` - Genesis transaction hash
-- `--required-signers <signers...>` - Array of required signer addresses for partial signing
+- `--required-signers <signers...>` - Array of required signer vfks for partial signing
 - `--signatures <signatures...>` - Array of new signature addresses
 - `--submit` - Submit the transaction on-chain (default: false)
 
@@ -182,8 +182,8 @@ merkle-oracle-cli change-signatures [options]
 ```bash
 merkle-oracle-cli change-signatures \
   --genesis-tx-hash "abc123..." \
-  --signatures "addr4..." "addr5..." "addr6..." \
-  --required-signers "addr1..." "addr2..." \
+  --signatures "vfk1..." "vfk2..." "vfk3..." \
+  --required-signers "vfk1..." "vfk2..." \
   --submit
 ```
 
@@ -196,7 +196,7 @@ merkle-oracle-cli change-threshold [options]
 
 **Options:**
 - `--genesis-tx-hash <hash>` - Genesis transaction hash
-- `--required-signers <signers...>` - Array of required signer addresses for partial signing
+- `--required-signers <signers...>` - Array of required signer vfks for partial signing
 - `--threshold <number>` - New threshold number of signatures required
 - `--submit` - Submit the transaction on-chain (default: false)
 
@@ -205,7 +205,7 @@ merkle-oracle-cli change-threshold [options]
 merkle-oracle-cli change-threshold \
   --genesis-tx-hash "abc123..." \
   --threshold 3 \
-  --required-signers "addr1..." "addr2..." \
+  --required-signers "vfk1..." "vfk2..." \
   --submit
 ```
 
@@ -379,7 +379,7 @@ cp multisig.sign.json.example multisig.sign.json
    ```bash
    merkle-oracle-cli deploy \
      --threshold 2 \
-     --signatures "addr1" "addr2" "addr3" \
+     --signatures "vfk1" "vfk2" "vfk3" \
      --submit
    ```
 
@@ -388,7 +388,7 @@ cp multisig.sign.json.example multisig.sign.json
    merkle-oracle-cli change-threshold \
      --genesis-tx-hash "multisig_genesis_hash" \
      --threshold 3 \
-     --required-signers "addr1" "addr2"
+     --required-signers "vfk1" "vfk2"
    ```
 
 3. **Add Signatures**
