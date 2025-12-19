@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import { type } from "arktype";
 import loadConfig from "../config.js";
+import { saveSubmittedTxArtifact } from "../deployments.js";
 import {
   createWallet,
   logExit,
@@ -35,9 +36,10 @@ const addSignatureCommand = async ($options: object) => {
     );
   }
 
-  const wallet = await createWallet(loadConfig());
+  const config = loadConfig();
+  const wallet = await createWallet(config);
   if (!wallet) return;
-  const { lucid } = wallet;
+  const { lucid, address } = wallet;
 
   const result = await addSignature(lucid, multiSigSignConfig);
 
@@ -48,9 +50,25 @@ const addSignatureCommand = async ($options: object) => {
   const { tx } = result;
 
   if (tx && options.submit) {
+    const txCbor = tx.toCBOR();
     const txHash = TxHash.assert(await tx.submit());
     console.log("Transaction submitted successfully!");
     console.log("Transaction hash:", txHash);
+
+    await saveSubmittedTxArtifact({
+      category: "multisig",
+      command: "add-signature",
+      network: config.network,
+      walletAddress: address,
+      txHash,
+      txCbor,
+      inputs: {
+        multisigFile: options.multisigFile,
+        requiredSigners: multiSigSignConfig.requiredSigners,
+        signersCount: multiSigSignConfig.signers.length,
+      },
+      outputs: {},
+    });
     return;
   }
 

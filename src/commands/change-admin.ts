@@ -1,5 +1,6 @@
 import { type } from "arktype";
 import loadConfig from "../config.js";
+import { saveSubmittedTxArtifact } from "../deployments.js";
 import {
   AssetName,
   createWallet,
@@ -22,9 +23,10 @@ const changeAdminCommand = async ($options: object) => {
   const options = ChangeAdminOptions($options);
   if (options instanceof type.errors) return logExit(options.summary);
 
-  const wallet = await createWallet(loadConfig());
+  const config = loadConfig();
+  const wallet = await createWallet(config);
   if (!wallet) return;
-  const { lucid } = wallet;
+  const { lucid, address } = wallet;
 
   const result = await changeAdmin(
     options.genesisTxHash,
@@ -32,12 +34,31 @@ const changeAdminCommand = async ($options: object) => {
     options.newAdminAssetName,
     options.requiredSigners,
     lucid,
-    loadConfig(),
+    config,
   );
 
   if (result && options.submit) {
-    const txHash = await result.tx.submit();
+    const txCbor = result.tx.toCBOR();
+    const txHash = TxHash.assert(await result.tx.submit());
     console.log(`Transaction submitted: ${txHash}`);
+
+    await saveSubmittedTxArtifact({
+      category: "oracle",
+      command: "change-admin",
+      network: config.network,
+      walletAddress: address,
+      txHash,
+      txCbor,
+      inputs: {
+        genesisTxHash: options.genesisTxHash,
+        newAdminPolicyId: options.newAdminPolicyId,
+        newAdminAssetName: options.newAdminAssetName,
+        requiredSigners: options.requiredSigners,
+      },
+      outputs: {
+        utxo: result.utxo,
+      },
+    });
   }
 };
 

@@ -1,6 +1,7 @@
 artifacts
 build
 dist
+deployments
 docs
 node_modules
 .ready

@@ -1,6 +1,7 @@
 import { type } from "arktype";
 import loadConfig from "../config.js";
 import { consumerSpend } from "../consumer/spend.js";
+import { saveSubmittedTxArtifact } from "../deployments.js";
 import { createWallet, logExit, TxHash } from "../inputs.js";
 
 const SpendOptions = type({
@@ -45,9 +46,10 @@ const spendAuto = async ($options: object) => {
     BigInt(fractionParts[1]),
   ];
 
-  const wallet = await createWallet(loadConfig());
+  const config = loadConfig();
+  const wallet = await createWallet(config);
   if (!wallet) return;
-  const { lucid } = wallet;
+  const { lucid, address } = wallet;
 
   const result = await consumerSpend(
     genesisTxHash,
@@ -56,15 +58,37 @@ const spendAuto = async ($options: object) => {
     itemValue,
     membershipProof,
     lucid,
-    loadConfig(),
+    config,
   );
 
   if (!result) return;
   const { tx } = result;
 
   if (options.submit) {
+    const txCbor = tx.toCBOR();
     const txHash = TxHash.assert(await tx.submit());
     console.log("Transaction hash:", txHash);
+
+    await saveSubmittedTxArtifact({
+      category: "consumer",
+      command: "spend-auto",
+      network: config.network,
+      walletAddress: address,
+      txHash,
+      txCbor,
+      inputs: {
+        genesisTxHash: options.genesisTxHash,
+        withdrawAddress: options.withdrawAddress,
+        itemId: options.itemId,
+        itemKey: options.itemKey,
+        apiBaseUrl: options.apiBaseUrl,
+      },
+      outputs: {
+        resolvedItemKeyHash: itemKeyHash,
+        resolvedItemValue: itemValueStr,
+        resolvedMembershipProof: membershipProof,
+      },
+    });
     return;
   }
 

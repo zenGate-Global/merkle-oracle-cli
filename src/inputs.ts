@@ -86,7 +86,7 @@ const createWallet = async (config: Config) => {
   // const utxos = await lucid.wallet().getUtxos();
   // if (!utxos.length) return logExit(`Wallet is empty. Fund: ${address}`);
 
-  return { lucid, network };
+  return { lucid, network, address };
 };
 
 function logExit(message: string): void;

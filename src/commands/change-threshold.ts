@@ -1,5 +1,6 @@
 import { type } from "arktype";
 import loadConfig from "../config.js";
+import { saveSubmittedTxArtifact } from "../deployments.js";
 import {
   ByteArray,
   createWallet,
@@ -21,9 +22,10 @@ const changeThresholdCommand = async ($options: object) => {
   const options = ChangeThresholdOptions($options);
   if (options instanceof type.errors) return logExit(options.summary);
 
-  const wallet = await createWallet(loadConfig());
+  const config = loadConfig();
+  const wallet = await createWallet(config);
   if (!wallet) return;
-  const { lucid } = wallet;
+  const { lucid, address } = wallet;
 
   const genesisTxHash = TxHash.assert(options.genesisTxHash);
 
@@ -32,7 +34,7 @@ const changeThresholdCommand = async ($options: object) => {
     options.requiredSigners,
     options.threshold,
     lucid,
-    loadConfig(),
+    config,
   );
 
   if (!result) {
@@ -42,12 +44,31 @@ const changeThresholdCommand = async ($options: object) => {
     return;
   }
 
-  const { singleton, tx } = result;
+  const { singleton, tx, utxo } = result;
 
   if (options.submit) {
+    const txCbor = tx.toCBOR();
     const txHash = TxHash.assert(await tx.submit());
     console.log("Changed threshold for singleton:", singleton);
     console.log("Transaction hash:", txHash);
+
+    await saveSubmittedTxArtifact({
+      category: "multisig",
+      command: "change-threshold",
+      network: config.network,
+      walletAddress: address,
+      txHash,
+      txCbor,
+      inputs: {
+        genesisTxHash: options.genesisTxHash,
+        requiredSigners: options.requiredSigners,
+        threshold: options.threshold,
+      },
+      outputs: {
+        singleton,
+        utxo,
+      },
+    });
     return;
   }
 

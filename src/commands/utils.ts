@@ -49,7 +49,9 @@ const addressInfo = async ($options: object) => {
   console.log(`\nAddress Info (index ${options.index}):`);
   console.log(`${"─".repeat(50)}`);
   console.log(`Address:            ${walletAddress}`);
-  console.log(`Network ID:         ${details.networkId === 1 ? "Mainnet" : "Preview/Testnet"}`);
+  console.log(
+    `Network ID:         ${details.networkId === 1 ? "Mainnet" : "Preview/Testnet"}`,
+  );
   console.log(`Address Type:       ${details.type}`);
 
   if (details.paymentCredential) {

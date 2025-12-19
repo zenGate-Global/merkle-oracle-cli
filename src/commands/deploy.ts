@@ -1,5 +1,6 @@
 import { type } from "arktype";
 import loadConfig from "../config.js";
+import { saveSubmittedTxArtifact } from "../deployments.js";
 import {
   AssetName,
   createWallet,
@@ -23,11 +24,12 @@ const deploy = async ($options: object) => {
 
   const singletonName = AssetName.assert(options.singletonName);
 
-  const wallet = await createWallet(loadConfig());
+  const config = loadConfig();
+  const wallet = await createWallet(config);
   if (!wallet) return;
-  const { lucid, network } = wallet;
+  const { lucid, network, address } = wallet;
 
-  const { token, tx } = await deployAdmin(
+  const { token, tx, utxo } = await deployAdmin(
     singletonName,
     options.threshold,
     options.signatures,
@@ -36,9 +38,28 @@ const deploy = async ($options: object) => {
   );
 
   if (options.submit) {
+    const txCbor = tx.toCBOR();
     const txHash = TxHash.assert(await tx.submit());
     console.log("Deployed multisig contract with singleton:", token);
     console.log("Transaction hash:", txHash);
+
+    await saveSubmittedTxArtifact({
+      category: "multisig",
+      command: "deploy",
+      network: config.network,
+      walletAddress: address,
+      txHash,
+      txCbor,
+      inputs: {
+        singletonName: options.singletonName,
+        threshold: options.threshold,
+        signatures: options.signatures,
+      },
+      outputs: {
+        singletonToken: token,
+        utxo,
+      },
+    });
     return;
   }
 

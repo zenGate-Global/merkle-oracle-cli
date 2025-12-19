@@ -1,5 +1,6 @@
 import { type } from "arktype";
 import loadConfig from "../config.js";
+import { saveSubmittedTxArtifact } from "../deployments.js";
 import {
   ByteArray,
   createWallet,
@@ -20,9 +21,10 @@ const changeSignaturesCommand = async ($options: object) => {
   const options = ChangeSignaturesOptions($options);
   if (options instanceof type.errors) return logExit(options.summary);
 
-  const wallet = await createWallet(loadConfig());
+  const config = loadConfig();
+  const wallet = await createWallet(config);
   if (!wallet) return;
-  const { lucid } = wallet;
+  const { lucid, address } = wallet;
 
   const genesisTxHash = TxHash.assert(options.genesisTxHash);
 
@@ -31,7 +33,7 @@ const changeSignaturesCommand = async ($options: object) => {
     options.requiredSigners,
     options.signatures,
     lucid,
-    loadConfig(),
+    config,
   );
 
   if (!result) {
@@ -41,12 +43,31 @@ const changeSignaturesCommand = async ($options: object) => {
     return;
   }
 
-  const { singleton, tx } = result;
+  const { singleton, tx, utxo } = result;
 
   if (options.submit) {
+    const txCbor = tx.toCBOR();
     const txHash = TxHash.assert(await tx.submit());
     console.log("Changed signatures for singleton:", singleton);
     console.log("Transaction hash:", txHash);
+
+    await saveSubmittedTxArtifact({
+      category: "multisig",
+      command: "change-signatures",
+      network: config.network,
+      walletAddress: address,
+      txHash,
+      txCbor,
+      inputs: {
+        genesisTxHash: options.genesisTxHash,
+        requiredSigners: options.requiredSigners,
+        signatures: options.signatures,
+      },
+      outputs: {
+        singleton,
+        utxo,
+      },
+    });
     return;
   }
 

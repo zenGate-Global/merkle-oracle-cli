@@ -13,6 +13,21 @@ This CLI tool provides commands for:
 - **Multisig Operations**: Deploy and configure multisig contracts  
 - **Consumer Contracts**: Deploy consumer contracts and spend from them
 
+Every time a transaction is successfully submitted on-chain (using the `--submit` flag), a deployment artifact is automatically saved to the `deployments/` directory in the root of the project. This allows for easy tracking of contract addresses, token units, and transaction history.
+
+### Deployment Artifacts
+
+Artifacts are organized into subfolders based on the contract category:
+- `deployments/oracle/`: Oracle genesis and management transactions
+- `deployments/multisig/`: Multisig deployment and configuration transactions
+- `deployments/consumer/`: Consumer deployment and spending transactions
+
+Each artifact is a JSON file named by its transaction hash (e.g., `<tx_hash>.json`) and contains:
+- **Metadata**: Timestamp, network, and connected wallet address
+- **Transaction**: The submitted transaction hash and its full CBOR hex
+- **Inputs**: The parameters and options used for the command
+- **Outputs**: Key blockchain data generated (e.g., singleton token units, contract UTXOs)
+
 ## Installation
 
 ```bash

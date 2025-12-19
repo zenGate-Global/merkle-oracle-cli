@@ -1,5 +1,6 @@
 import { type } from "arktype";
 import loadConfig from "../config.js";
+import { saveSubmittedTxArtifact } from "../deployments.js";
 import {
   ByteArray,
   createWallet,
@@ -21,9 +22,10 @@ const recreate = async ($options: object) => {
   const options = RecreateOptions($options);
   if (options instanceof type.errors) return logExit(options.summary);
 
-  const wallet = await createWallet(loadConfig());
+  const config = loadConfig();
+  const wallet = await createWallet(config);
   if (!wallet) return;
-  const { lucid, network } = wallet;
+  const { lucid, network, address } = wallet;
 
   const result = await recreateContract(
     options.genesisTxHash,
@@ -31,7 +33,7 @@ const recreate = async ($options: object) => {
     options.newMerkleRootHash,
     options.newIpfsCid,
     lucid,
-    loadConfig(),
+    config,
     network,
   );
 
@@ -42,11 +44,30 @@ const recreate = async ($options: object) => {
     return;
   }
 
-  const { tx } = result;
+  const { tx, utxo } = result;
 
   if (options.submit) {
+    const txCbor = tx.toCBOR();
     const txHash = TxHash.assert(await tx.submit());
     console.log("Recreated oracle with transaction:", txHash);
+
+    await saveSubmittedTxArtifact({
+      category: "oracle",
+      command: "recreate",
+      network: config.network,
+      walletAddress: address,
+      txHash,
+      txCbor,
+      inputs: {
+        genesisTxHash: options.genesisTxHash,
+        requiredSigners: options.requiredSigners,
+        newMerkleRootHash: options.newMerkleRootHash,
+        newIpfsCid: options.newIpfsCid,
+      },
+      outputs: {
+        utxo,
+      },
+    });
     return;
   }
 

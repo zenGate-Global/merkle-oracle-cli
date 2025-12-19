@@ -1,8 +1,8 @@
 import { Command } from "commander";
 import {
-  addSignatureCommand,
   address,
   addressInfo,
+  addSignatureCommand,
   changeAdminCommand,
   changeSignaturesCommand,
   changeThresholdCommand,

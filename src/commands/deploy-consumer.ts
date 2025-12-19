@@ -1,6 +1,7 @@
 import { type } from "arktype";
 import loadConfig from "../config.js";
 import { deploy } from "../consumer/index.js";
+import { saveSubmittedTxArtifact } from "../deployments.js";
 import {
   AssetName,
   createWallet,
@@ -28,11 +29,12 @@ const deployConsumer = async ($options: object) => {
   const threshold = Uint.assert(options.threshold);
   const lovelaceToLock = Uint.assert(options.lovelaceToLock);
 
-  const wallet = await createWallet(loadConfig());
+  const config = loadConfig();
+  const wallet = await createWallet(config);
   if (!wallet) return;
-  const { lucid, network } = wallet;
+  const { lucid, network, address } = wallet;
 
-  const { tx } = await deploy(
+  const { tx, utxo } = await deploy(
     oraclePolicyId,
     oracleAssetName,
     threshold,
@@ -43,8 +45,28 @@ const deployConsumer = async ($options: object) => {
   );
 
   if (options.submit) {
+    const txCbor = tx.toCBOR();
     const txHash = TxHash.assert(await tx.submit());
     console.log("Transaction hash:", txHash);
+
+    await saveSubmittedTxArtifact({
+      category: "consumer",
+      command: "deploy-consumer",
+      network: config.network,
+      walletAddress: address,
+      txHash,
+      txCbor,
+      inputs: {
+        oraclePolicyId: options.oraclePolicyId,
+        oracleAssetName: options.oracleAssetName,
+        lovelaceToLock: options.lovelaceToLock,
+        threshold: options.threshold,
+        shouldDeployScript: options.shouldDeployScript,
+      },
+      outputs: {
+        consumerUtxo: utxo,
+      },
+    });
     return;
   }
 
