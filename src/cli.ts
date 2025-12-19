@@ -1,6 +1,8 @@
 import { Command } from "commander";
 import {
   addSignatureCommand,
+  address,
+  addressInfo,
   changeAdminCommand,
   changeSignaturesCommand,
   changeThresholdCommand,
@@ -160,5 +162,19 @@ program
   .option("--api-base-url <url>", "The base URL of the API")
   .option("--submit", "Set flag to submit the tx on-chain", false)
   .action(spendAuto);
+
+const utils = program.command("utils").description("Utility commands");
+
+utils
+  .command("address")
+  .description("Shows the current connected wallet address")
+  .option("--index <number>", "The account index to derive address from", "0")
+  .action(address);
+
+utils
+  .command("address-info")
+  .description("Shows detailed address info including credentials and hashes")
+  .option("--index <number>", "The account index to derive address from", "0")
+  .action(addressInfo);
 
 export default program;
