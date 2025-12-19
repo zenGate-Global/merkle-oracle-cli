@@ -11,12 +11,12 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "prebuild:clean": "rimraf dist",
+    "prebuild:clean": "del-cli dist",
     "prebuild": "pnpm npm-run-all prebuild:clean",
     "build:typescript": "pnpm tsc",
     "build": "pnpm npm-run-all build:typescript",
-    "postbuild:clean": "rimraf dist/tests && rimraf --glob \"dist/vitest*\"",
-    "postbuild:plutus": "pnpm copy-files-from-to",
+    "postbuild:clean": "del-cli dist/tests \"dist/vitest*\"",
+    "postbuild:plutus": "cpy src/contracts/*/plutus.json dist/contracts --parents",
     "postbuild": "pnpm npm-run-all postbuild:clean postbuild:plutus",
     "lint:eslint": "pnpm eslint .",
     "lint:prettier": "pnpm prettier -c .",
@@ -31,20 +31,6 @@
     "dist",
     "package.json",
     "README.md"
-  ],
-  "copyFiles": [
-    {
-      "from": "src/contracts/multisig/plutus.json",
-      "to": "dist/contracts/multisig/plutus.json"
-    },
-    {
-      "from": "src/contracts/oracle/plutus.json",
-      "to": "dist/contracts/oracle/plutus.json"
-    },
-    {
-      "from": "src/contracts/consumer/plutus.json",
-      "to": "dist/contracts/consumer/plutus.json"
-    }
   ],
   "resolutions": {
     "@harmoniclabs/crypto": "^0.3.0-dev0"
@@ -70,15 +56,14 @@
     "@types/node": "^22.15.21",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
-    "copy-files-from-to": "^3.12.1",
+    "cpy-cli": "^5.0.0",
     "del-cli": "^6.0.0",
     "eslint": "^9.27.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-typescript": "^4.3.5",
     "eslint-plugin-import": "^2.31.0",
-    "npm-run-all": "^4.1.5",
+    "npm-run-all2": "^7.0.2",
     "prettier": "^3.5.3",
-    "rimraf": "^6.0.1",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "vitest": "^3.1.4"
