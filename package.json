@@ -16,7 +16,7 @@
     "build:typescript": "pnpm tsc",
     "build": "pnpm npm-run-all build:typescript",
     "postbuild:clean": "del-cli dist/tests \"dist/vitest*\"",
-    "postbuild:plutus": "cpy src/contracts/*/plutus.json dist/contracts --parents",
+    "postbuild:plutus": "cpy \"src/contracts/*/plutus.json\" \"dist/contracts\"",
     "postbuild": "pnpm npm-run-all postbuild:clean postbuild:plutus",
     "lint:eslint": "pnpm eslint .",
     "lint:prettier": "pnpm prettier -c .",
