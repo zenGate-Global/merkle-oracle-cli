@@ -83,7 +83,7 @@ const resolveContractPath = async (
     await access(distPath);
     return distPath;
   } catch {
-    // try the src path
+    // try the src/root path (when running via ts/tsx or in unusual layouts)
     const srcPath = path.join(
       here,
       "..",
@@ -92,7 +92,21 @@ const resolveContractPath = async (
       contractName,
       "plutus.json",
     );
-    return srcPath;
+    try {
+      await access(srcPath);
+      return srcPath;
+    } catch {
+      throw new Error(
+        [
+          `Could not find plutus.json for contract "${contractName}".`,
+          `Tried:`,
+          `- ${distPath}`,
+          `- ${srcPath}`,
+          ``,
+          `If you are running the built CLI, ensure you ran \`pnpm build\` and that the build copied contract artifacts into \`dist/contracts/${contractName}/plutus.json\`.`,
+        ].join("\n"),
+      );
+    }
   }
 };
 
